@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лапки — Интерактивное приложение</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #1E1E1E;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            background-color: #FDFBF7;
+            border-radius: 44px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            position: relative;
+            border: 12px solid #2C2C2C;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #111;
+            background-color: #FDFBF7;
+            z-index: 10;
+        }
+
+        .screen {
+            flex: 1;
+            width: 100%;
+            background-color: #FDFBF7;
+            display: none;
+            flex-direction: column;
+            padding: 16px 24px 80px 24px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Кнопки */
+        .btn-primary {
+            width: 100%;
+            background-color: #3F5E4B;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:active {
+            background-color: #2F4738;
+        }
+
+        .btn-secondary {
+            background: #EBF2E8;
+            color: #3F5E4B;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            align-self: flex-start;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Поля ввода */
+        .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            background: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Экран 1 */
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .logo-badge {
+            background-color: #3F5E4B;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .dog-card {
+            background-color: #F4EFE6;
+            width: 100%;
+            border-radius: 24px;
+            padding: 24px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tagline-badge {
+            background-color: #E2EBD6;
+            color: #3F5E4B;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .link-text {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .link-text span {
+            color: #3F5E4B;
+            font-weight: 600;
+        }
+
+        /* Экран 3 */
+        .pet-banner {
+            background-color: #EBF2E8;
+            border-radius: 20px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            margin-bottom: 16px;
+            border: 1px solid #D2E3CD;
+        }
+
+        .quick-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+
+        .action-card {
+            flex: 1;
+            background: white;
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            border: 1px solid #F0F0F0;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            border: 1px solid #F5F5F5;
+        }
+
+        .ritual-item {
+            background: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        /* Экран 4 */
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            background-color: #F0EAD6;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            overflow: hidden;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: #F5F2EB;
+            padding: 10px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .stat-box span {
+            font-size: 10px;
+            color: #777;
+            display: block;
+        }
+
+        .stat-box b {
+            font-size: 13px;
+            color: #222;
+        }
+
+        /* Нижнее меню */
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: white;
+            border-top: 1px solid #EEE;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 10px;
+            z-index: 20;
+        }
+
+        .tab-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #888;
+            cursor: pointer;
+            gap: 3px;
+        }
+
+        .tab-item.active {
+            color: #3F5E4B;
+            font-weight: 700;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            max-height: 85%;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-frame">
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>⚡ 100%</span>
+    </div>
+
+    <!-- ЭКРАН 1: Добро пожаловать -->
+    <div id="screen-1" class="screen active">
+        <div class="welcome-content">
+            <div class="logo-badge">🐾 Лапки</div>
+            <div class="dog-card">
+                <div class="profile-avatar" style="margin-bottom:15px; width:120px; height:120px;">🐶</div>
+                <span class="tagline-badge">Маленькие лапы. Большая любовь.</span>
+                <h1>Забота, которая всегда рядом</h1>
+                <p>Здоровье, прогулки и любимые специалисты — в одном уютном месте.</p>
+            </div>
+            <button class="btn-primary" onclick="goToScreen('screen-2')">Войти</button>
+            <div class="link-text" onclick="goToScreen('screen-2')">Впервые в «Лапках»? <span>Зарегистрироваться</span></div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2A: Регистрация владельца -->
+    <div id="screen-2" class="screen">
+        <button class="back-btn" onclick="goToScreen('screen-1')">‹</button>
+        <h1>Начнём с знакомства</h1>
+        <p style="margin-bottom: 20px;">Шаг 1 из 2: Ваша учётная запись</p>
+        
+        <form onsubmit="event.preventDefault(); goToScreen('screen-2-pet');">
+            <div class="form-group">
+                <label>Ваше имя</label>
+                <input type="text" id="owner-name" class="form-input" value="Анна Смирнова" required>
+            </div>
+            <div class="form-group">
+                <label>Электронная почта</label>
+                <input type="email" id="owner-email" class="form-input" value="anna.smirnova@mail.ru" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" class="form-input" value="12345678" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Продолжить</button>
+        </form>
+        <div class="link-text" style="text-align: center; margin-top: 15px;" onclick="goToScreen('screen-1')">Уже есть аккаунт? <span>Войти</span></div>
+    </div>
+
+    <!-- ЭКРАН 2B: Данные о питомце -->
+    <div id="screen-2-pet" class="screen">
+        <button class="back-btn" onclick="goToScreen('screen-2')">‹</button>
+        <h1>Расскажите о питомце</h1>
+        <p style="margin-bottom: 16px;">Шаг 2 из 2: Профиль пушистого друга</p>
+        
+        <form onsubmit="finishRegistration(event)">
+            <div class="form-group">
+                <label>Кличка питомца</label>
+                <input type="text" id="pet-name" class="form-input" value="Боня" required>
+            </div>
+            <div class="form-group">
+                <label>Порода</label>
+                <input type="text" id="pet-breed" class="form-input" value="Вельш-корги пемброк" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Возраст</label>
+                    <input type="text" id="pet-age" class="form-input" value="3 г. 4 мес." required>
+                </div>
+                <div class="form-group">
+                    <label>Вес (кг)</label>
+                    <input type="text" id="pet-weight" class="form-input" value="11.8" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Пол</label>
+                    <select id="pet-gender" class="form-select">
+                        <option value="Девочка">Девочка ♀</option>
+                        <option value="Мальчик">Мальчик ♂</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Дата рождения</label>
+                    <input type="date" id="pet-birth" class="form-input" value="2023-06-12">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary">Завершить и войти</button>
+        </form>
+    </div>
+
+    <!-- ЭКРАН 3: Главная -->
+    <div id="screen-3" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+                <p style="font-size: 11px; color: #888;" id="current-date">Пятница, 16 октября</p>
+                <h2 style="font-size: 18px;" id="welcome-user-text">Доброе утро, Анна!</h2>
+            </div>
+            <div style="background: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor:pointer;" onclick="alert('Уведомлений нет')">🔔</div>
+        </div>
+
+        <div class="pet-banner" onclick="goToScreen('screen-4')">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="profile-avatar" style="width:40px; height:40px; font-size:20px; margin:0;">🐶</div>
+                <div>
+                    <h3 id="display-pet-name" style="font-size: 15px; color: #222;">Боня</h3>
+                    <p id="display-pet-sub" style="font-size: 11px; color: #555;">Вельш-корги · 3 года 4 мес.</p>
+                </div>
+            </div>
+            <span style="font-size: 18px; color: #555;">›</span>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="openBookingModal('Прививка')">💉<br>Прививки</div>
+            <div class="action-card" onclick="alert('Раздел Прогулки: Скоро откроется!')">🐾<br>Прогулки</div>
+            <div class="action-card" onclick="openBookingModal('Груминг')">✂️<br>Специалисты</div>
+        </div>
+
+        <div class="section-title">
+            <span>Ближайшие события</span>
+            <button class="btn-secondary" onclick="openBookingModal('Услуга')">+ Записаться</button>
+        </div>
+
+        <div id="events-list">
+            <div class="event-card">
+                <div>
+                    <h4 style="font-size: 13px;">Груминг</h4>
+                    <p style="font-size: 11px; color:#666;">Мастер Анна · 11:30</p>
+                </div>
+                <span style="font-size: 12px; font-weight: 700; color: #3F5E4B;">18 окт</span>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 15px;"><span>Маленькие ритуалы</span></div>
+        <div class="ritual-item" onclick="toggleCheck(this)">
+            <span style="font-size: 13px;">🥣 Завтрак</span>
+            <span class="status-check">⚪</span>
+        </div>
+        <div class="ritual-item" onclick="toggleCheck(this)">
+            <span style="font-size: 13px;">💧 Свежая вода</span>
+            <span class="status-check">🟢</span>
+        </div>
+
+        <!-- Нижнее меню -->
+        <div class="tab-bar">
+            <button class="tab-item active" onclick="goToScreen('screen-3')"><span>🏠</span>Главная</button>
+            <button class="tab-item" onclick="alert('История прогулок пока пуста')"><span>🐕</span>Прогулка</button>
+            <button class="tab-item" onclick="openBookingModal('Консультация')"><span>📅</span>Запись</button>
+            <button class="tab-item" onclick="goToScreen('screen-4')"><span>👤</span>Профиль</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 4: Профиль питомца -->
+    <div id="screen-4" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h2 style="font-size: 18px;">Мой питомец</h2>
+            <button style="background:none; border:none; cursor:pointer;" onclick="goToScreen('screen-2-pet')">✏️</button>
+        </div>
+
+        <div class="profile-avatar">🐶</div>
+        <h3 id="profile-pet-name" style="text-align: center; font-size: 18px;">Боня ♀</h3>
+        <p id="profile-pet-breed" style="text-align: center; font-size: 12px; margin-bottom: 15px; color:#666;">Вельш-корги пемброк</p>
+
+        <div class="stats-row">
+            <div class="stat-box">
+                <span>Возраст</span>
+                <b id="profile-pet-age">3 г. 4 мес.</b>
+            </div>
+            <div class="stat-box">
+                <span>Вес</span>
+                <b id="profile-pet-weight">11,8 кг</b>
+            </div>
+            <div class="stat-box">
+                <span>Пол</span>
+                <b id="profile-pet-gender">Девочка</b>
+            </div>
+        </div>
+
+        <div style="background: white; padding: 12px 14px; border-radius: 12px; margin-bottom: 15px; font-size: 13px; display: flex; justify-content: space-between; border: 1px solid #F0F0F0;">
+            <span style="color: #777;">Дата рождения</span>
+            <b id="profile-pet-birth">12 июня 2023</b>
+        </div>
+
+        <div class="section-title">
+            <span>Здоровье и прививки</span>
+            <button class="btn-secondary" onclick="openVaccineModal()">+ Добавить</button>
+        </div>
+
+        <div id="vaccines-list">
+            <div class="event-card">
+                <div>
+                    <h4 style="font-size: 13px;">💉 Комплексная вакцинация</h4>
+                    <p style="font-size: 11px; color:#666;">Сделана: 24 октября 2025 г.</p>
+                    <p style="font-size: 11px; color:#3F5E4B; font-weight:600;">Повтор: 24 октября 2026 г.</p>
+                </div>
+                <span style="font-size: 11px; background:#EBF2E8; padding:4px 8px; border-radius:6px; color:#3F5E4B;">Активна</span>
+            </div>
+        </div>
+
+        <!-- Нижнее меню -->
+        <div class="tab-bar">
+            <button class="tab-item" onclick="goToScreen('screen-3')"><span>🏠</span>Главная</button>
+            <button class="tab-item" onclick="alert('История прогулок пока пуста')"><span>🐕</span>Прогулка</button>
+            <button class="tab-item" onclick="openBookingModal('Запись')"><span>📅</span>Запись</button>
+            <button class="tab-item active" onclick="goToScreen('screen-4')"><span>👤</span>Профиль</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ЗАПИСИ -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 id="modal-title">Запись к специалисту</h3>
+                <button style="background:none; border:none; font-size:20px; cursor:pointer;" onclick="closeModal('booking-modal')">✕</button>
+            </div>
+            <form onsubmit="saveBooking(event)">
+                <div class="form-group">
+                    <label>Выберите услугу</label>
+                    <select id="book-service" class="form-select">
+                        <option value="Груминг">Груминг</option>
+                        <option value="Прививка">Вакцинация / Прививка</option>
+                        <option value="Приём ветеринара">Консультация ветеринара</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Дата</label>
+                    <input type="date" id="book-date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Время</label>
+                    <input type="time" id="book-time" class="form-input" value="14:00" required>
+                </div>
+                <button type="submit" class="btn-primary">Записаться</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПРИВИВКИ -->
+    <div id="vaccine-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3>Внести прививку</h3>
+                <button style="background:none; border:none; font-size:20px; cursor:pointer;" onclick="closeModal('vaccine-modal')">✕</button>
+            </div>
+            <form onsubmit="saveVaccine(event)">
+                <div class="form-group">
+                    <label>Название вакцины</label>
+                    <input type="text" id="vac-name" class="form-input" placeholder="например, Нобивак / Бешенство" required>
+                </div>
+                <div class="form-group">
+                    <label>Дата проведения</label>
+                    <input type="date" id="vac-date" class="form-input" required>
+                </div>
+                <button type="submit" class="btn-primary">Сохранить запись</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Состояние приложения
+    let appState = {
+        ownerName: "Анна Смирнова",
+        petName: "Боня",
+        petBreed: "Вельш-корги пемброк",
+        petAge: "3 г. 4 мес.",
+        petWeight: "11.8 кг",
+        petGender: "Девочка",
+        petBirth: "12 июня 2023",
+        events: [
+            { title: "Груминг", info: "Мастер Анна · 11:30", date: "18 окт" }
+        ],
+        vaccines: [
+            { name: "💉 Комплексная вакцинация", dateDone: "2025-10-24", dateNext: "2026-10-24" }
+        ]
+    };
+
+    function goToScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function finishRegistration(e) {
+        e.preventDefault();
+        
+        appState.ownerName = document.getElementById('owner-name').value;
+        appState.petName = document.getElementById('pet-name').value;
+        appState.petBreed = document.getElementById('pet-breed').value;
+        appState.petAge = document.getElementById('pet-age').value;
+        appState.petWeight = document.getElementById('pet-weight').value + " кг";
+        appState.petGender = document.getElementById('pet-gender').value;
+        
+        let rawDate = document.getElementById('pet-birth').value;
+        if (rawDate) {
+            let d = new Date(rawDate);
+            appState.petBirth = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        updateUI();
+        goToScreen('screen-3');
+    }
+
+    function updateUI() {
+        document.getElementById('welcome-user-text').innerText = `Доброе утро, ${appState.ownerName.split(' ')[0]}!`;
+        document.getElementById('display-pet-name').innerText = appState.petName;
+        document.getElementById('display-pet-sub').innerText = `${appState.petBreed} · ${appState.petAge}`;
+        
+        document.getElementById('profile-pet-name').innerText = `${appState.petName} ${appState.petGender === 'Девочка' ? '♀' : '♂'}`;
+        document.getElementById('profile-pet-breed').innerText = appState.petBreed;
+        document.getElementById('profile-pet-age').innerText = appState.petAge;
+        document.getElementById('profile-pet-weight').innerText = appState.petWeight;
+        document.getElementById('profile-pet-gender').innerText = appState.petGender;
+        document.getElementById('profile-pet-birth').innerText = appState.petBirth;
+
+        renderEvents();
+        renderVaccines();
+    }
+
+    function renderEvents() {
+        let container = document.getElementById('events-list');
+        container.innerHTML = '';
+        appState.events.forEach(ev => {
+            container.innerHTML += `
+                <div class="event-card">
+                    <div>
+                        <h4 style="font-size: 13px;">${ev.title}</h4>
+                        <p style="font-size: 11px; color:#666;">${ev.info}</p>
+                    </div>
+                    <span style="font-size: 12px; font-weight: 700; color: #3F5E4B;">${ev.date}</span>
+                </div>
+            `;
+        });
+    }
+
+    function renderVaccines() {
+        let container = document.getElementById('vaccines-list');
+        container.innerHTML = '';
+        appState.vaccines.forEach(vac => {
+            let doneStr = new Date(vac.dateDone).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+            let nextStr = new Date(vac.dateNext).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+            container.innerHTML += `
+                <div class="event-card">
+                    <div>
+                        <h4 style="font-size: 13px;">${vac.name}</h4>
+                        <p style="font-size: 11px; color:#666;">Сделана: ${doneStr}</p>
+                        <p style="font-size: 11px; color:#3F5E4B; font-weight:600;">Повтор: ${nextStr}</p>
+                    </div>
+                    <span style="font-size: 11px; background:#EBF2E8; padding:4px 8px; border-radius:6px; color:#3F5E4B;">Записано</span>
+                </div>
+            `;
+        });
+    }
+
+    function openBookingModal(serviceName) {
+        document.getElementById('book-service').value = serviceName;
+        document.getElementById('booking-modal').style.display = 'flex';
+    }
+
+    function openVaccineModal() {
+        document.getElementById('vaccine-modal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function saveBooking(e) {
+        e.preventDefault();
+        let service = document.getElementById('book-service').value;
+        let dateVal = document.getElementById('book-date').value;
+        let timeVal = document.getElementById('book-time').value;
+
+        let formattedDate = dateVal ? new Date(dateVal).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }) : "Завтра";
+
+        appState.events.unshift({
+            title: service,
+            info: `Время: ${timeVal}`,
+            date: formattedDate
+        });
+
+        renderEvents();
+        closeModal('booking-modal');
+        alert('Запись успешно создана!');
+    }
+
+    function saveVaccine(e) {
+        e.preventDefault();
+        let name = document.getElementById('vac-name').value;
+        let doneDate = document.getElementById('vac-date').value;
+
+        if (!doneDate) return;
+
+        let nextDateObj = new Date(doneDate);
+        nextDateObj.setFullYear(nextDateObj.getFullYear() + 1);
+        let nextDate = nextDateObj.toISOString().split('T')[0];
+
+        appState.vaccines.unshift({
+            name: "💉 " + name,
+            dateDone: doneDate,
+            dateNext: nextDate
+        });
+
+        renderVaccines();
+        closeModal('vaccine-modal');
+    }
+
+    function toggleCheck(el) {
+        let badge = el.querySelector('.status-check');
+        if (badge.innerText === '⚪') {
+            badge.innerText = '🟢';
+        } else {
+            badge.innerText = '⚪';
+        }
+    }
+</script>
+
+</body>
+</html>
